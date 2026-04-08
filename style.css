@@ -213,6 +213,40 @@ a{
     object-fit: contain;
 }
 
+/* css for page4 purified and cost effective links */
+
+.newpage-nav-container {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20%;
+    width: 71%;
+    z-index: 1;
+}
+
+.clickable-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clickable-link a {
+    display: block;
+    width: 100%;
+}
+
+.clickable img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
 /* to get button in center */
 /* * {
     box-sizing: border-box;

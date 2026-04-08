@@ -1,0 +1,312 @@
+:root {
+    --bg: #0b0f14;
+    --panel: #111826;
+    --text: #e8eef7;
+    --muted: #9fb0c7;
+    --accent: #4da3ff;
+    --danger: #ff5a6a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 800px at 20% 10%, #152036 0%, var(--bg) 60%);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    height: 100vh;
+    gap: 14px;
+}
+
+#stageWrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* important so our hotspot layer matches the actual image area */
+    user-select: none;
+    pointer-events: none;
+}
+
+#hotspotLayer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* buttons will re-enable pointer events */
+}
+
+.hotspot {
+    pointer-events: auto;
+    position: absolute;
+    border: 0;
+    background: transparent;
+    /* your button visuals are already inside the JPG */
+    padding: 0;
+    cursor: pointer;
+}
+
+.hotspot:disabled {
+    cursor: not-allowed;
+}
+
+.hotspot:focus-visible {
+    outline: 2px solid rgba(77, 163, 255, 0.95);
+    outline-offset: 2px;
+}
+
+/* Extra reference hotspots (ex: Step 2 has 3 red-arrow references) */
+.refHotspot[hidden] {
+    display: none;
+}
+
+/* Hotspot positions are relative to the rendered image area. Adjust if needed. */
+#homeBtn {
+    left: 2%;
+    bottom: 3%;
+    width: 3%;
+    height: 4%;
+    top: auto;
+}
+
+#previewBtn {
+    right: 6%;
+    bottom: 3%;
+    width: 3%;
+    height: 4%;
+    left: auto;
+}
+
+#nextBtn {
+    right: 2%;
+    bottom: 3%;
+    width: 3%;
+    height: 4%;
+    left: auto;
+}
+
+#referenceBtn {
+    right: 10%;
+    bottom: 3%;
+    width: 4%;
+    height: 5%;
+    left: auto;
+}
+
+/* Step 2: 3 red arrow refs (Proven Legacy / Manufacturing / Nationwide) */
+#ref2_1Btn {
+    left: 16%;
+    top: 51%;
+    width: 33%;
+    height: 11%;
+}
+
+#ref2_2Btn {
+    left: 16%;
+    top: 67%;
+    width: 34%;
+    height: 10%;
+}
+
+#ref2_3Btn {
+    left: 16%;
+    bottom: 7%;
+    width: 34%;
+    height: 11%;
+}
+
+/* Step 3: 3 red arrow refs (PURE / FAST / TOLERABLE) */
+#ref3_1Btn {
+    left: 14%;
+    bottom: 39%;
+    width: 37%;
+    height: 12%;
+}
+
+#ref3_2Btn {
+    left: 14%;
+    bottom: 23%;
+    width: 37%;
+    height: 12%;
+}
+
+#ref3_3Btn {
+    left: 14%;
+    bottom: 7%;
+    width: 37%;
+    height: 12%;
+}
+
+/* Step 4: right-side red callouts (Neurop... / Vasculotoxic...) */
+#ref4_1Btn {
+    right: 15%;
+    bottom: 33%;
+    width: 33%;
+    height: 12%;
+}
+
+#ref4_2Btn {
+    right: 15%;
+    bottom: 15%;
+    width: 33%;
+    height: 12%;
+}
+
+#ivaPanel {
+    width: 340px;
+    flex: 0 0 auto;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#ivaHeader {
+    padding: 14px 16px;
+    background: rgba(17, 24, 38, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#ivaHeader .brand {
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+#ivaHeader .stepBadge {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+#ivaMessageWrap {
+    padding: 14px 16px;
+    display: grid;
+    gap: 10px;
+}
+
+#ivaMessage {
+    line-height: 1.35;
+    font-size: 14px;
+}
+
+#helpHint {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+#thumbStrip {
+    margin-top: auto;
+    padding: 12px 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(17, 24, 38, 0.45);
+}
+
+#thumbTitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.thumbRow {
+    display: flex;
+    gap: 10px;
+    overflow: auto;
+    padding-bottom: 6px;
+}
+
+.thumbRow img {
+    width: 74px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+.thumbRow img:focus-visible {
+    outline: 2px solid rgba(77, 163, 255, 0.95);
+    outline-offset: 2px;
+}
+
+/* Reference overlay */
+#referenceOverlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 999;
+}
+
+#referenceOverlay.open {
+    display: flex;
+}
+
+#referenceImage {
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+@media (max-width: 900px) {
+    #app {
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    #ivaPanel {
+        width: 100%;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    #stageWrap {
+        height: 64vh;
+    }
+}
+
+
+#closepopup {
+    position: absolute;
+    background: transparent;
+    width: 3%;
+    height: 4%;
+    border: none;
+    border-radius: 50%;
+    top: 30%;
+    right: 20%;
+    cursor: pointer;
+}

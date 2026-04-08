@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IVA Image Viewer</title>
+    <link rel="stylesheet" href="asvs-style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="stageWrap">
+        <div id="stage" aria-label="IVA Image Viewer">
+          <img id="mainImage" alt="Step image" />
+
+          <!-- Invisible clickable area (hotspots) that sits on top of the JPG buttons -->
+          <div id="hotspotLayer" aria-hidden="true">
+            <button id="homeBtn" class="hotspot" type="button" aria-label="Home"></button>
+            <button id="referenceBtn" class="hotspot" type="button" aria-label="Reference"></button>
+            <button id="previewBtn" class="hotspot" type="button" aria-label="Preview"></button>
+            <button id="nextBtn" class="hotspot" type="button" aria-label="Next"></button>
+
+            <!-- Step 2 has 3 separate reference hotspots (the 3 red arrows) -->
+            <button id="ref2_1Btn" class="hotspot refHotspot" type="button" aria-label="Reference 2.1"></button>
+            <button id="ref2_2Btn" class="hotspot refHotspot" type="button" aria-label="Reference 2.2"></button>
+            <button id="ref2_3Btn" class="hotspot refHotspot" type="button" aria-label="Reference 2.3"></button>
+
+            <!-- Step 3 has 3 separate reference hotspots -->
+            <button id="ref3_1Btn" class="hotspot refHotspot" type="button" aria-label="Reference 3.1"></button>
+            <button id="ref3_2Btn" class="hotspot refHotspot" type="button" aria-label="Reference 3.2"></button>
+            <button id="ref3_3Btn" class="hotspot refHotspot" type="button" aria-label="Reference 3.3"></button>
+
+            <!-- Step 4 has 2 separate reference hotspots -->
+            <button id="ref4_1Btn" class="hotspot refHotspot" type="button" aria-label="Reference 4.1"></button>
+            <button id="ref4_2Btn" class="hotspot refHotspot" type="button" aria-label="Reference 4.2"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="referenceOverlay" role="dialog" aria-modal="true" aria-label="Reference">
+      <img id="referenceImage" alt="Reference popup" />
+      <button id="closepopup" type="button" aria-label="Close popup"></button>
+    </div>
+
+    <script>
+      (() => {
+        const mainSlides = [1, 2, 3, 4, 5];
+        const referencesByStep = {
+          2: ["2.1", "2.2", "2.3"],
+          3: ["3.1", "3.2", "3.3"],
+          4: ["4.1", "4.2"],
+        };
+
+        const mainImage = document.getElementById("mainImage");
+        const hotspotLayer = document.getElementById("hotspotLayer");
+
+        const homeBtn = document.getElementById("homeBtn");
+        const previewBtn = document.getElementById("previewBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const referenceBtn = document.getElementById("referenceBtn");
+
+        const ref2_1Btn = document.getElementById("ref2_1Btn");
+        const ref2_2Btn = document.getElementById("ref2_2Btn");
+        const ref2_3Btn = document.getElementById("ref2_3Btn");
+
+        const ref3_1Btn = document.getElementById("ref3_1Btn");
+        const ref3_2Btn = document.getElementById("ref3_2Btn");
+        const ref3_3Btn = document.getElementById("ref3_3Btn");
+
+        const ref4_1Btn = document.getElementById("ref4_1Btn");
+        const ref4_2Btn = document.getElementById("ref4_2Btn");
+
+        const referenceOverlay = document.getElementById("referenceOverlay");
+        const referenceImage = document.getElementById("referenceImage");
+        const closepopup = document.getElementById("closepopup");
+
+
+        let currentIndex = 0;
+
+        function stepNumber() {
+          return mainSlides[currentIndex];
+        }
+
+        function preload() {
+   
+          mainSlides.forEach((n) => {
+            const img = new Image();
+            img.src = "./assets/" + n + ".webp";
+          });
+
+          Object.keys(referencesByStep).forEach((step) => {
+            referencesByStep[step].forEach((refId) => {
+              const img = new Image();
+              img.src = "./assets/" + refId + ".webp";
+            });
+          });
+          const refPopup = new Image();
+          refPopup.src = "./assets/ref-popup.webp";
+        }
+
+        function syncHotspotLayerToContainedImage() {
+
+          const Wc = mainImage.clientWidth;
+          const Hc = mainImage.clientHeight;
+          const Wn = mainImage.naturalWidth;
+          const Hn = mainImage.naturalHeight;
+
+          if (!Wc || !Hc || !Wn || !Hn) return;
+
+          const scale = Math.min(Wc / Wn, Hc / Hn);
+          const drawnW = Wn * scale;
+          const drawnH = Hn * scale;
+          const offsetX = (Wc - drawnW) / 2;
+          const offsetY = (Hc - drawnH) / 2;
+
+          // hotspotLayer.style.left = offsetX + "px";
+          // hotspotLayer.style.top = offsetY + "px";
+          // hotspotLayer.style.width = drawnW + "px";
+          // hotspotLayer.style.height = drawnH + "px";
+        }
+
+        function setSlide(index) {
+          currentIndex = Math.max(0, Math.min(mainSlides.length - 1, index));
+
+          const n = stepNumber();
+          mainImage.src = "./assets/" + n + ".webp";
+
+  
+          previewBtn.disabled = currentIndex === 0;
+          nextBtn.disabled = currentIndex === mainSlides.length - 1;
+          referenceBtn.disabled = currentIndex === mainSlides.length - 1;
+
+          const isStep2 = n === 2;
+          ref2_1Btn.hidden = !isStep2;
+          ref2_2Btn.hidden = !isStep2;
+          ref2_3Btn.hidden = !isStep2;
+
+          const isStep3 = n === 3;
+          ref3_1Btn.hidden = !isStep3;
+          ref3_2Btn.hidden = !isStep3;
+          ref3_3Btn.hidden = !isStep3;
+
+          const isStep4 = n === 4;
+          ref4_1Btn.hidden = !isStep4;
+          ref4_2Btn.hidden = !isStep4;
+        }
+
+        function openReferenceOverlay(imageName) {
+          if (!imageName) return;
+          referenceImage.src = "./assets/" + imageName;
+          referenceOverlay.classList.add("open");
+        }
+
+        function closeReferenceOverlay() {
+          referenceOverlay.classList.remove("open");
+        }
+
+        function isPopupCrossHit(event) {
+          const rect = referenceImage.getBoundingClientRect();
+          if (!rect.width || !rect.height) return false;
+
+          const x = (event.clientX - rect.left) / rect.width;
+          const y = (event.clientY - rect.top) / rect.height;
+
+          // Close hit area mapped to the red cross drawn in ref-popup image (top-right).
+          return x >= 0.91 && x <= 0.985 && y >= 0.04 && y <= 0.14;
+        }
+
+        homeBtn.addEventListener("click", () => {window.location.href = "index.htm";});
+        previewBtn.addEventListener("click", () => setSlide(currentIndex - 1));
+        nextBtn.addEventListener("click", () => setSlide(currentIndex + 1));
+        referenceBtn.addEventListener("click", () => openReferenceOverlay("ref-popup.webp"));
+
+   
+        ref2_1Btn.addEventListener("click", () => openReferenceOverlay("2.1.webp"));
+        ref2_2Btn.addEventListener("click", () => openReferenceOverlay("2.2.webp"));
+        ref2_3Btn.addEventListener("click", () => openReferenceOverlay("2.3.webp"));
+
+
+        ref3_1Btn.addEventListener("click", () => openReferenceOverlay("3.1.webp"));
+        ref3_2Btn.addEventListener("click", () => openReferenceOverlay("3.2.webp"));
+        ref3_3Btn.addEventListener("click", () => openReferenceOverlay("3.3.webp"));
+
+
+        ref4_1Btn.addEventListener("click", () => openReferenceOverlay("4.1.webp"));
+        ref4_2Btn.addEventListener("click", () => openReferenceOverlay("4.2.webp"));
+
+        referenceOverlay.addEventListener("click", (e) => {
+          if (e.target === referenceOverlay) closeReferenceOverlay();
+        });
+        referenceImage.addEventListener("click", (e) => {
+          if (isPopupCrossHit(e)) closeReferenceOverlay();
+        });
+        closepopup.addEventListener("click", closeReferenceOverlay);
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Home") setSlide(0);
+          else if (e.key === "ArrowLeft") setSlide(currentIndex - 1);
+          else if (e.key === "ArrowRight") setSlide(currentIndex + 1);
+          else if (e.key.toLowerCase() === "r") openReferenceOverlay("ref-popup.webp");
+          else if (e.key === "Escape") closeReferenceOverlay();
+        });
+
+        mainImage.addEventListener("load", () => {
+          syncHotspotLayerToContainedImage();
+          previewBtn.disabled = currentIndex === 0;
+          nextBtn.disabled = currentIndex === mainSlides.length - 1;
+        });
+
+        window.addEventListener("resize", () => {
+          clearTimeout(window.__ivaResizeTimer);
+          window.__ivaResizeTimer = setTimeout(syncHotspotLayerToContainedImage, 80);
+        });
+
+        preload();
+        setSlide(0);
+      })();
+    </script>
+  </body>
+</html>

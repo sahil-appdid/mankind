@@ -198,6 +198,7 @@ html, body {
 .clickable a {
     display: block;
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .clickable img {
